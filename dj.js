@@ -82,7 +82,6 @@ var install = function(strategy, dir, cb) {
 				cb(err)
 			}
 			try {
-				console.log(modules[0][0].split("@")[0])
 				cb(null, require(modules[0][0].split("@")[0]));
 			} catch (ex) {
 				cb(ex);
