@@ -75,7 +75,7 @@ var app = connect()
 				});
 			});
 		})
-	}).listen(8080);
+	}).listen(80);
 
 var install = function(strategy, dir, cb) {
 	var npm = require("npm")
