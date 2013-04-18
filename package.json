@@ -1,0 +1,11 @@
+{
+  "name": "dshell",
+  "main": "dshell.js",
+  "version": "0.1.0",
+  "description": "Deployment Shell",
+  "dependencies": {
+    "connect": "*",
+    "rimraf": "*",
+    "npm": "*"
+  }
+}

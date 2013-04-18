@@ -1,0 +1,27 @@
+
+Setup
+=====
+
+Prerequisites
+-------------
+
+- git
+- node
+
+Installation
+------------
+
+root> git clone <repo url>
+root> cd dshell
+root/dshell> npm install
+root/dshell> node dshell
+
+Usage
+-----
+
+http://<your server>?repo=https://github.com/apphouse-sap/helloworld.git
+
+Deployment Strategy
+-------------------
+
+git+ssh://git@github.com:apphouse-sap/hanaxs.git
