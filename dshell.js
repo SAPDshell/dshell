@@ -1,23 +1,7 @@
-var sys = require('sys'),
-	url = require('url'),
-	exec = require('child_process').exec,
-	http = require('http'),
-	connect = require('connect'),
-	rimraf = require('rimraf')
-
-var crypto = require('crypto');
-var fs = require('fs');
-
-logMiddleware = function (req, res, next) {
-	req.log = function(str) {
-		res.write(str);
-		console.log(str);
-	}
-}
 
 repMiddleware = function (req, res, next) {
 	try {
-		var rep = url.parse(req.url, true).query.repo;
+		var rep = require('url').parse(req.url, true).query.repo;
 		if(rep) {
 			req.rep = rep;
 			next();
@@ -32,15 +16,15 @@ repMiddleware = function (req, res, next) {
 
 dirMiddleware = function (req, res, next) {
 	try {
-		var dir = 'z' + crypto.randomBytes(4).readUInt32LE(0),
+		var dir = 'z' + require('crypto').randomBytes(4).readUInt32LE(0),
 		    end = res.end;
 		res.end = function(chunk, encoding) {
 			res.end = end;
-			rimraf(req.dir, function() {
+			require('rimraf')(req.dir, function() {
 				res.end(chunk, encoding);
 			})
 		}
-		fs.mkdir(dir, function(e) {
+		require('fs').mkdir(dir, function(e) {
 			req.dir = dir;
 			next();
 		})
@@ -50,18 +34,17 @@ dirMiddleware = function (req, res, next) {
 	}
 }
 
-var app = connect()
-	.use(logMiddleware)
+var app = require('connect')()
 	.use(repMiddleware)
 	.use(dirMiddleware)
 	.use(function(req, res){
-		exec("git clone " + req.rep + " repo", {cwd: req.dir}, function(err, stdout, stderr) {
+		require('child_process').exec("git clone " + req.rep + " repo", {cwd: req.dir}, function(err, stdout, stderr) {
 
-			req.log(err, stdout, stderr)
+			console.log(err, stdout, stderr);
 
-			var deploy = JSON.parse(fs.readFileSync(req.dir + "/repo/deployment.json"));
+			var deploy = JSON.parse(require('fs').readFileSync(req.dir + "/repo/deployment.json"));
 
-			req.log(deploy)
+			console.log(deploy);
 
 			install(deploy.strategy, req.dir, function(err, strategy) {
 				if (err) {
