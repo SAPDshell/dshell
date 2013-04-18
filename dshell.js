@@ -66,16 +66,31 @@ var install = function(strategy, dir, cb) {
 		// https://npmjs.org/api/npm.html
 		npm.load({}, function(err, npm) {
 			// npm object loaded
-			npm.commands.install([strategy], function(err, modules) {
-				if(err) {
-					cb(err)
-				}
+			try {
+				npm.commands.install([strategy], function(err, modules) {
+					// ignore err, on err try locally
+					try {
+						// force a reload on require
+						// http://nodejs.org/docs/latest/api/globals.html#globals_require_cache
+						delete require.cache[modules[0][0].split("@")[0]];
+						// require
+						cb(null, require(modules[0][0].split("@")[0]));
+					} catch (ex) {
+						cb(ex);
+					}
+				})
+			// on exception try locally
+			} catch(ex) {
 				try {
+					// force a reload on require
+					// http://nodejs.org/docs/latest/api/globals.html#globals_require_cache
+					delete require.cache[modules[0][0].split("@")[0]];
+					// require
 					cb(null, require(modules[0][0].split("@")[0]));
 				} catch (ex) {
 					cb(ex);
 				}
-			})
+			}
 		})
 	} catch(ex) {
 		cb(ex);
