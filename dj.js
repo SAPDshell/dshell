@@ -8,7 +8,14 @@ var sys = require('sys'),
 var crypto = require('crypto');
 var fs = require('fs');
 
-repMiddleware = function worseThanUselessMiddleware(req, res, next) {
+logMiddleware = function (req, res, next) {
+	req.log = function(str) {
+		res.write(str);
+		console.log(str);
+	}
+}
+
+repMiddleware = function (req, res, next) {
 	try {
 		var rep = url.parse(req.url, true).query.repo;
 		if(rep) {
@@ -23,16 +30,16 @@ repMiddleware = function worseThanUselessMiddleware(req, res, next) {
 	}
 }
 
-dirMiddleware = function worseThanUselessMiddleware(req, res, next) {
+dirMiddleware = function (req, res, next) {
 	try {
 		var dir = 'z' + crypto.randomBytes(4).readUInt32LE(0),
 		    end = res.end;
-		// res.end = function(chunk, encoding) {
-		// 	res.end = end;
-		// 	rimraf(req.dir, function() {
-		// 		res.end(chunk, encoding);
-		// 	})
-		// }
+		res.end = function(chunk, encoding) {
+			res.end = end;
+			rimraf(req.dir, function() {
+				res.end(chunk, encoding);
+			})
+		}
 		fs.mkdir(dir, function(e) {
 			req.dir = dir;
 			next();
@@ -44,16 +51,17 @@ dirMiddleware = function worseThanUselessMiddleware(req, res, next) {
 }
 
 var app = connect()
+	.use(logMiddleware)
 	.use(repMiddleware)
 	.use(dirMiddleware)
 	.use(function(req, res){
 		exec("git clone " + req.rep + " repo", {cwd: req.dir}, function(err, stdout, stderr) {
 
-			console.log(err, stdout, stderr)
+			req.log(err, stdout, stderr)
 
 			var deploy = JSON.parse(fs.readFileSync(req.dir + "/repo/deployment.json"));
 
-			console.log(deploy)
+			req.log(deploy)
 
 			install(deploy.strategy, req.dir, function(err, strategy) {
 				if (err) {
@@ -61,11 +69,8 @@ var app = connect()
 					res.end(err.toString());
 					return;
 				}
-				console.log("call strategy", strategy);
 				strategy(req.dir + "/repo", deploy, function(err, msg) {
-					res.writeHead(200, {
-						'Content-Type': 'text/plain'
-					});
+					res.writeHead(200);
 					res.end(msg);
 				});
 			});
@@ -82,7 +87,6 @@ var install = function(strategy, dir, cb) {
 				cb(err)
 			}
 			try {
-				console.log(modules[0][0].split("@")[0])
 				cb(null, require(modules[0][0].split("@")[0]));
 			} catch (ex) {
 				cb(ex);
