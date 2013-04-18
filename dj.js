@@ -78,19 +78,23 @@ var app = connect()
 	}).listen(80);
 
 var install = function(strategy, dir, cb) {
-	var npm = require("npm")
-	// https://npmjs.org/api/npm.html
-	npm.load({}, function(err, npm) {
-		// npm object loaded
-		npm.commands.install([strategy], function(err, modules) {
-			if(err) {
-				cb(err)
-			}
-			try {
-				cb(null, require(modules[0][0].split("@")[0]));
-			} catch (ex) {
-				cb(ex);
-			}
+	try {
+		var npm = require("npm");
+		// https://npmjs.org/api/npm.html
+		npm.load({}, function(err, npm) {
+			// npm object loaded
+			npm.commands.install([strategy], function(err, modules) {
+				if(err) {
+					cb(err)
+				}
+				try {
+					cb(null, require(modules[0][0].split("@")[0]));
+				} catch (ex) {
+					cb(ex);
+				}
+			})
 		})
-	})
+	} catch(ex) {
+		cb(ex);
+	}
 }
