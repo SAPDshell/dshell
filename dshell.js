@@ -1,4 +1,3 @@
-
 repMiddleware = function (req, res, next) {
 	try {
 		var rep = require('url').parse(req.url, true).query.repo;
@@ -20,9 +19,10 @@ dirMiddleware = function (req, res, next) {
 		    end = res.end;
 		res.end = function(chunk, encoding) {
 			res.end = end;
-			require('rimraf')(req.dir, function() {
+			require('child_process').exec("rmdir " + dir + "/S /Q", function(err, stdout, stderr) {
+				console.log("delete", err);
 				res.end(chunk, encoding);
-			})
+			});
 		}
 		require('fs').mkdir(dir, function(e) {
 			req.dir = dir;
