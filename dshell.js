@@ -6,7 +6,17 @@ repMiddleware = function (req, res, next) {
 			next();
 		}
 		else {
-			res.end("No repo");
+			res.write("Deployment Shell v1.0.0\n");
+			res.write("Copyright 2013 SAP Labs, LLC\n");
+			res.write("\n");
+			res.write("- Dominik Tornow <dominik.tornow@sap.com>\n");
+			res.write("- Joerg Latza <joerg.latza@sap.com>\n");
+			res.write("\n");
+			res.write("Usage: dshell.saphana.com?repo=http://github.com/your/repo\n");
+			res.write("\n");
+			res.write("Read the manual @ http://scn.sap.com/people/dominik.tornow/blog/2013/04/26/dshell-manual\n");
+			res.write("Read the story @ http://scn.sap.com/people/dominik.tornow/blog/2013/04/26/dshell-story\n");
+			res.end();
 		}
 	} catch (e) {
 		res.end(e.toString());
@@ -35,16 +45,16 @@ dirMiddleware = function (req, res, next) {
 }
 
 var app = require('connect')()
+    .use(require('connect').static('strategies'))
 	.use(repMiddleware)
 	.use(dirMiddleware)
 	.use(function(req, res){
 		require('child_process').exec("git clone " + req.rep + " repo", {cwd: req.dir}, function(err, stdout, stderr) {
 
-			console.log(err, stdout, stderr);
-
 			var deploy = JSON.parse(require('fs').readFileSync(req.dir + "/repo/deployment.json"));
 
-			console.log(deploy);
+			res.write("Requested\n");
+			res.write(JSON.stringify(deploy) + "\n");
 
 			install(deploy.strategy, req.dir, function(err, strategy) {
 				if (err) {
