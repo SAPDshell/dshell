@@ -11,11 +11,6 @@ repMiddleware = function (req, res, next) {
 			res.write("\n");
 			res.write("- Dominik Tornow <dominik.tornow@sap.com>\n");
 			res.write("- Joerg Latza <joerg.latza@sap.com>\n");
-			res.write("\n");
-			res.write("Usage: dshell.saphana.com?repo=http://github.com/your/repo\n");
-			res.write("\n");
-			res.write("Read the manual @ http://scn.sap.com/people/dominik.tornow/blog/2013/04/26/dshell-manual\n");
-			res.write("Read the story @ http://scn.sap.com/people/dominik.tornow/blog/2013/04/26/dshell-story\n");
 			res.end();
 		}
 	} catch (e) {
@@ -30,7 +25,6 @@ dirMiddleware = function (req, res, next) {
 		res.end = function(chunk, encoding) {
 			res.end = end;
 			require('child_process').exec("rmdir " + dir + "/S /Q", function(err, stdout, stderr) {
-				console.log("delete", err);
 				res.end(chunk, encoding);
 			});
 		}
@@ -45,64 +39,65 @@ dirMiddleware = function (req, res, next) {
 }
 
 var app = require('connect')()
-    .use(require('connect').static('strategies'))
+    // .use(require('connect').static('strategies'))
+    .use(require('connect').basicAuth(function(username, password) {
+    	// that's right, sue me >:) !!!
+    	global.username = username; 
+    	global.password = password; 
+    	return true
+    }))
 	.use(repMiddleware)
 	.use(dirMiddleware)
 	.use(function(req, res){
 		require('child_process').exec("git clone " + req.rep + " repo", {cwd: req.dir}, function(err, stdout, stderr) {
 
-			var deploy = JSON.parse(require('fs').readFileSync(req.dir + "/repo/deployment.json"));
+			console.log(global.username, global.password)
+			console.log(err, stderr)
 
-			res.write("Requested\n");
-			res.write(JSON.stringify(deploy) + "\n");
+			res.write("Deployment Shell v1.0.0\n");
+			res.write("Copyright 2013 SAP Labs, LLC\n");
+			res.write("\n");
 
-			install(deploy.strategy, req.dir, function(err, strategy) {
-				if (err) {
-					res.writeHead(400);
-					res.end(err.toString());
+			if(err || stderr) {
+				res.write("ERROR\n");
+				res.write("=====\n");
+				res.write("Cannot git clone " + req.rep + "\n");
+				res.write(err.toString());
+				res.write(stderr.toString());
+				res.end();
+				return;
+			}
+
+			var deploy = {};
+
+			try {
+				deploy = JSON.parse(require('fs').readFileSync(req.dir + "/repo/deployment.json"));
+			} catch(ex) {
+				res.write("ERROR\n");
+				res.write("=====\n");
+				res.write("Cannot access or decode deploment descriptor\n");
+				res.write(ex.toString());
+				res.end();
+				return;
+			}
+
+			res.write("DEPLOYMENT DESCRIPTOR\n");
+			res.write("=====================\n");
+			res.write("\n");
+			res.write(JSON.stringify(deploy));
+			res.write("\n");
+
+			require(deploy.strategy)(req.dir + "/repo", deploy, function(err, msg) {
+				if(err) {
+					res.write("ERROR\n");
+					res.write("=====\n");
+					res.write("Deployment failed\n");
+					res.write(err.toString());
+					res.end();
 					return;
 				}
-				strategy(req.dir + "/repo", deploy, function(err, msg) {
-					res.writeHead(200);
-					res.end(msg);
-				});
+				res.writeHead(200);
+				res.end(msg);
 			});
 		})
 	}).listen(80);
-
-var install = function(strategy, dir, cb) {
-	try {
-		var npm = require("npm");
-		// https://npmjs.org/api/npm.html
-		npm.load({}, function(err, npm) {
-			// npm object loaded
-			try {
-				npm.commands.install([strategy], function(err, modules) {
-					// ignore err, on err try locally
-					try {
-						// force a reload on require
-						// http://nodejs.org/docs/latest/api/globals.html#globals_require_cache
-						delete require.cache[modules[0][0].split("@")[0]];
-						// require
-						cb(null, require(modules[0][0].split("@")[0]));
-					} catch (ex) {
-						cb(ex);
-					}
-				})
-			// on exception try locally
-			} catch(ex) {
-				try {
-					// force a reload on require
-					// http://nodejs.org/docs/latest/api/globals.html#globals_require_cache
-					delete require.cache[modules[0][0].split("@")[0]];
-					// require
-					cb(null, require(modules[0][0].split("@")[0]));
-				} catch (ex) {
-					cb(ex);
-				}
-			}
-		})
-	} catch(ex) {
-		cb(ex);
-	}
-}
