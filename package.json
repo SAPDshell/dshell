@@ -1,11 +1,10 @@
 {
   "name": "dshell",
   "main": "dshell.js",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Deployment Shell",
   "dependencies": {
     "connect": "*",
-    "rimraf": "*",
-    "npm": "*"
+    "hanaxs": "https://codeload.github.com/apphouse-sap/hanaxs/tar.gz/master"
   }
 }
