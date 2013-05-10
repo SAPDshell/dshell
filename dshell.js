@@ -6,6 +6,7 @@ repMiddleware = function (req, res, next) {
 		res.write("\n");
 		res.write("- Dominik Tornow <dominik.tornow@sap.com>\n");
 		res.write("- Joerg Latza <joerg.latza@sap.com>\n");
+		res.write("\n");
 
 		var rep = require('url').parse(req.url, true).query.repo;
 
