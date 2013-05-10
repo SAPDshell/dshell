@@ -87,17 +87,30 @@ var app = require('connect')()
 			res.write(JSON.stringify(deploy));
 			res.write("\n");
 
-			require(deploy.strategy)(req.dir + "/repo", deploy, function(err, msg) {
-				if(err) {
-					res.write("ERROR\n");
-					res.write("=====\n");
-					res.write("Deployment failed\n");
-					res.write(err.toString());
-					res.end();
-					return;
-				}
-				res.writeHead(200);
-				res.end(msg);
-			});
+			try {
+				require(deploy.strategy)(req.dir + "/repo", deploy, function(err, msg) {
+					if(err) {
+						res.write("ERROR\n");
+						res.write("=====\n");
+						res.write("Deployment failed\n");
+						res.write(err.toString());
+						res.end();
+						return;
+					}
+					res.write("SUCCESS\n");
+					res.write("=======\n");
+					res.write("\n");
+					res.end(msg);
+				});
+			} catch(ex) {
+				res.write("ERROR\n");
+				res.write("=====\n");
+				res.write("\n");
+				res.write("Cannot require or execute " + deploy.strategy + "\n");
+				res.write("\n");
+				res.write(ex.toString());
+				res.end();
+				return;
+			}
 		})
-	}).listen(80);
+	}).listen(1237);
