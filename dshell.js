@@ -1,20 +1,27 @@
 repMiddleware = function (req, res, next) {
 	try {
+
+		res.write("Deployment Shell v1.0.0\n");
+		res.write("Copyright 2013 SAP Labs, LLC\n");
+		res.write("\n");
+		res.write("- Dominik Tornow <dominik.tornow@sap.com>\n");
+		res.write("- Joerg Latza <joerg.latza@sap.com>\n");
+
 		var rep = require('url').parse(req.url, true).query.repo;
+
 		if(rep) {
 			req.rep = rep;
 			next();
 		}
 		else {
-			res.write("Deployment Shell v1.0.0\n");
-			res.write("Copyright 2013 SAP Labs, LLC\n");
-			res.write("\n");
-			res.write("- Dominik Tornow <dominik.tornow@sap.com>\n");
-			res.write("- Joerg Latza <joerg.latza@sap.com>\n");
 			res.end();
 		}
 	} catch (e) {
-		res.end(e.toString());
+		res.write("ERROR\n");
+		res.write("=====\n");
+		res.write("\n");
+		res.write(e.toString());
+		res.end();
 	}
 }
 
@@ -61,7 +68,9 @@ var app = require('connect')()
 			if(err || stderr) {
 				res.write("ERROR\n");
 				res.write("=====\n");
+				res.write("\n");
 				res.write("Cannot git clone " + req.rep + "\n");
+				res.write("\n");
 				res.write(err.toString());
 				res.write(stderr.toString());
 				res.end();
