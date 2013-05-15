@@ -42,8 +42,7 @@ var app = require('connect')()
     // .use(require('connect').static('strategies'))
     .use(require('connect').basicAuth(function(username, password) {
     	// that's right, sue me >:) !!!
-    	console.log(username, password)
-    	global.username = username; 
+    	global.username = username.toLowerCase(); 
     	global.password = password; 
     	return true
     }))
