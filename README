@@ -1,4 +1,3 @@
-
 Setup
 =====
 
@@ -13,15 +12,18 @@ Installation
 
 root> git clone <repo url>
 root> cd dshell
-root/dshell> npm install
-root/dshell> node dshell
+root/dshell> npm install https://codeload.github.com/SAPDshell/dshell/tar.gz/master
+root/dshell> node node_modules\dshell\dshell.js
 
 Usage
 -----
 
-http://<your server>?repo=https://github.com/apphouse-sap/helloworld.git
+http://<your server>?repo=https://github.com/<your repo>/<your root folder>
 
 Deployment Strategy
 -------------------
 
-git+ssh://git@github.com:apphouse-sap/hanaxs.git
+hanaxs
+
+More Info on http://scn.sap.com/community/developer-center/hana/blog/2013/05/13/sap-deployment-shell--faq
+
