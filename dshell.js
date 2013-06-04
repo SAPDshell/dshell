@@ -48,8 +48,11 @@ var app = require('connect')()
     }))
 	.use(repMiddleware)
 	.use(dirMiddleware)
-	.use(function(req, res){
-		require('child_process').exec("git clone " + req.rep + " repo", {cwd: req.dir}, function(err, stdout, stderr) {
+	.use(function(req, res) {
+		
+		console.log("git clone " + req.rep);
+		
+		require('child_process').exec("git clone " + req.rep + " repo", {cwd: req.dir, timeout: 25*60*1000}, function(err, stdout, stderr) {
 
 			res.write("Deployment Shell v1.0.0\n");
 			res.write("Copyright 2013 SAP Labs, LLC\n");
