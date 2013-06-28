@@ -5,6 +5,6 @@
   "description": "Deployment Shell",
   "dependencies": {
     "connect": "*",
-    "hanaxs": "https://codeload.github.com/apphouse-sap/hanaxs/tar.gz/master"
+    "hanaxs": "https://codeload.github.com/SAPDshell/hanaxs/tar.gz/master"
   }
 }
