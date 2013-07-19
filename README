@@ -1,3 +1,22 @@
+
+What is the SAP HANA deployment shell?
+
+
+The SAP HANA deployment shell (Dshell) enables developers to develop and deploy with the tool of their choice, especially for the development of HTML/CSS and JavaScript. 
+The Dshell is available in the cloud, and GitHub triggers deployments using service hooks. Each time a developer pushes a change to the GitHub repository, the deployment shell automatically deploys the code to the configured instance of SAP HANA.
+Developers must have:
+- A GitHub user and repository
+- The developer edition of SAP HANA (accessible in the cloud)
+To get started please refer to the documentation on the SAP Developer Center (link)
+
+More Info on http://scn.sap.com/community/developer-center/hana/blog/2013/05/13/sap-deployment-shell--faq
+
+
+
+Below some legal stuff
+----------------------
+
+
 Copyright 2013, SAP AG
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,51 +32,5 @@ Copyright 2013, SAP AG
    limitations under the License.
 
 
-Setup
-=====
-
-Prerequisites
--------------
-
-- git
-- node
-- HANA instance credentials
-
-
-Installation
-------------
-
-root> md dshell
-root> cd dshell
-root/dshell> npm install https://codeload.github.com/SAPDshell/dshell/tar.gz/master
-
-
-Run
----
-root/dshell> node node_modules\dshell\dshell.js
-
-
-Usage
-=====
-
-    define Service Hook:
-    
-      http://<user>:<password>@dshell.saphana.com:1237?repo=https://github.com/<your repo>/<your root folder>
-    
-      !! encode special characters in password !!
-      
-      
-    maintain deployment.json
-    
-      {
-      "strategy": "hanaxs",
-      "host": "<your HANA host>:3<HANA sid>15",
-    	"root": "<your root folder>"
-      }
-
-
-see repository SAPDshell/helloworld for example
-
-
-More Info on http://scn.sap.com/community/developer-center/hana/blog/2013/05/13/sap-deployment-shell--faq
+ 
 
