@@ -1,9 +1,11 @@
-
 What is the SAP HANA deployment shell?
 
+The SAP HANA deployment shell (Dshell) enables developers to develop and deploy with the tool of their choice, 
+especially for the development of HTML/CSS and JavaScript. 
+The Dshell is available in the cloud, and GitHub triggers deployments using service hooks. Each time a developer 
+pushes a change to the GitHub repository, the deployment shell automatically deploys the code to the configured 
+instance of SAP HANA.
 
-The SAP HANA deployment shell (Dshell) enables developers to develop and deploy with the tool of their choice, especially for the development of HTML/CSS and JavaScript. 
-The Dshell is available in the cloud, and GitHub triggers deployments using service hooks. Each time a developer pushes a change to the GitHub repository, the deployment shell automatically deploys the code to the configured instance of SAP HANA.
 Developers must have:
 - A GitHub user and repository
 - The developer edition of SAP HANA (accessible in the cloud)
