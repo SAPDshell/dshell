@@ -1,0 +1,41 @@
+Setup
+=====
+
+Prerequisites
+-------------
+
+- git
+- node
+- HANA instance credentials
+
+
+Installation
+------------
+
+root> md dshell
+root> cd dshell
+root/dshell> npm install https://codeload.github.com/SAPDshell/dshell/tar.gz/master
+
+
+Run
+---
+root/dshell> node node_modules\dshell\dshell.js
+
+
+Usage
+=====
+
+    define Service Hook:
+    
+      http://<user>:<password>@dshell.saphana.com:1237?repo=https://github.com/<your repo>/<your root folder>
+    
+      !! encode special characters in password !!
+      
+      
+    maintain deployment.json
+    
+      {
+      "strategy": "hanaxs",
+      "host": "<your HANA host>:3<HANA sid>15",
+      "root": "<your root folder>"
+      }
