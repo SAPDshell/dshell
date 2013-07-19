@@ -8,10 +8,11 @@ instance of SAP HANA.
 
 Developers must have:
 - A GitHub user and repository
-- The developer edition of SAP HANA (accessible in the cloud)
-To get started please refer to the documentation on the SAP Developer Center (link)
+- The developer edition of SAP HANA (accessible in the cloud) 
+  or
+  SignUp for a Testversion on http://dshell.sap.com
 
-More Info on http://scn.sap.com/community/developer-center/hana/blog/2013/05/13/sap-deployment-shell--faq
+Documentation can be found on the SAP Developer Center: http://scn.sap.com/docs/DOC-41137
 
 
 
