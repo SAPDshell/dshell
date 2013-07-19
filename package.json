@@ -6,5 +6,11 @@
   "dependencies": {
     "connect": "*",
     "hanaxs": "https://codeload.github.com/SAPDshell/hanaxs/tar.gz/master"
-  }
+  },  
+  "licenses": [		
+    {			
+       "type": "MIT",			
+       "url": "https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt"		
+    }	
+  ]
 }
