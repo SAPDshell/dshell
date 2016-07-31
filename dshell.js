@@ -58,7 +58,8 @@ var app = require('connect')()
 	.use(repMiddleware)
 	.use(dirMiddleware)
 	.use(function(req, res) {
-		
+        const username = require('username');
+		global.username = username.sync();
 		console.log("git clone " + req.rep);
 		
 		require('child_process')
