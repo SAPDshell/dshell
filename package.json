@@ -5,6 +5,7 @@
   "description": "Deployment Shell",
   "dependencies": {
     "connect": "*",
+    "username": "1.0.1",
     "hanaxs": "https://codeload.github.com/SAPDshell/hanaxs/tar.gz/master"
   },  
   "licenses": [		
